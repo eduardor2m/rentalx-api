@@ -1,26 +1,17 @@
 /* eslint-disable consistent-return */
 import { Router } from "express";
 
-import { PostgresCategoriesRepository } from "../repositories/PostgresCategoriesRepository";
-import { CreateCategoryService } from "../services/CreateCategoryService";
+import { createCategoryController } from "../modules/cars/useCases/createCategory";
+import { listCategoriesController } from "../modules/cars/useCases/listCategories";
 
 const categoriesRoutes = Router();
-const categoriesRepository = new PostgresCategoriesRepository();
 
 categoriesRoutes.post("/", (req, res) => {
-  const { name, description } = req.body;
-
-  const createCategoryService = new CreateCategoryService(categoriesRepository);
-
-  createCategoryService.execute({ name, description });
-
-  res.status(201).send(categoriesRepository.list());
+  return createCategoryController.handle(req, res);
 });
 
 categoriesRoutes.get("/", (req, res) => {
-  const categories = categoriesRepository.list();
-
-  return res.status(200).json(categories);
+  return listCategoriesController.handle(req, res);
 });
 
 export { categoriesRoutes };
